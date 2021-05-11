@@ -1,0 +1,69 @@
+version: '3.1'
+services:
+    postgres:
+        container_name: ${API_NAME}-db-postgres
+        image: postgres:latest
+        restart: always
+        expose:
+            - ${POSTGRES_PORT}
+        ports:
+            - ${POSTGRES_PORT}:5432
+        environment:
+            POSTGRES_DB_NAME: ${POSTGRES_DB_NAME}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            PGDATA: /data/postgres
+        volumes:
+            - ./docker/postgres/configs/postgres.conf:/etc/postgresql/postgresql.conf
+            - ./docker/postgres/data:/var/lib/postgresql/data
+            - ./docker/postgres/entrypoints/postgres-init.sh:/docker-entrypoint-initdb.d/postgres-init.sh
+        command: postgres -p ${POSTGRES_PORT} -c config_file=/etc/postgresql/postgresql.conf
+
+    mongodb:
+        container_name: ${API_NAME}-db-mongodb
+        image: mongo:latest
+        restart: always
+        expose:
+            - ${MONGODB_PORT}
+        ports:
+            - ${MONGODB_PORT}:27017
+        environment:
+            MONGO_INITDB_DATABASE: ${MONGODB_DB_NAME}
+            MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+        env_file:
+            - .env
+        volumes:
+            - ./docker/mongodb/entrypoints/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
+            - ./docker/mongodb/data:/data/db
+        command: mongod --port ${MONGODB_PORT}
+
+    redis:
+        container_name: ${API_NAME}-db-redis
+        image: redis:alpine
+        restart: always
+        ports:
+            - ${REDIS_PORT}:6379
+        command: redis-server --requirepass ${REDIS_PASSWORD}
+
+    api:
+        container_name: ${API_NAME}-api-node
+        image: node:latest
+        restart: always
+        env_file:
+            - .env
+        depends_on:
+            - postgres
+            - mongodb
+            - redis
+        ports:
+            - 127.0.0.1:${SERVER_PORT}:${SERVER_PORT}
+        volumes:
+            - .:/usr/src/app
+        working_dir: /usr/src/app
+        command: yarn start
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '10m'
+                max-file: '5'
