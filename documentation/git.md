@@ -51,3 +51,12 @@ $ git update-index --assume-unchanged yarn.lock
 # Restaura a gestao do arquivo pelo git
 $ git update-index --no-assume-unchanged yarn.lock
 ```
+
+### Remover arquivo do cache de gerenciamento
+
+```bash
+# Documentacao: https://dev.to/nishina555/how-to-ignore-files-already-managed-with-git-locally-19oo
+
+# Necessario fazer um commit
+$ git rm --cached yarn.lock
+```

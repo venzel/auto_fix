@@ -2,10 +2,12 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
 
+### Venzel ###
 .vscode/
 docker/mongodb/data
 docker/postgres/data
 docker/postgres/configs
+yarn.lock
 
 ### Node ###
 # Logs
