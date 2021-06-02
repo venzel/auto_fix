@@ -1,6 +1,7 @@
 require('dotenv/config')
 
-const base_path = '/usr/src/app/'
+const base_path =
+    process.env.POSTGRES_HOST === 'development' ? '/usr/src/app/' : './'
 
 module.exports = [
     {

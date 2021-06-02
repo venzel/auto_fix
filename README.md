@@ -101,7 +101,7 @@ $ yarn add eslint-plugin-prettier eslint-import-resolver-typescript -D
 ## packages : developer : @commitlint
 
 ```bash
-$ yarn add @commitlint/cli @commitlint/config-conventional -D
+$ yarn add @commitlint/cli @commitlint/config-conventional husky -D
 ```
 
 ## packages : developer : semantic-release
